@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'Reception/style.css' %}">
+        <title>{% block title %}Clinic App{% endblock %}</title>
+    </head>
+    <body>
+        <header class="nav-bar">
+            <div class="logo">
+                <h5>LOGO</h5>
+            </div>
+            <div class="clinic-name">
+                <h5>U Tin Htun Naing's Local Clinic</h5>
+            </div>
+            <div>
+                <button class="login-btn" type="button">Login | Sign Up</button>
+            </div>
+        </header>
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+    </body>
+</html>

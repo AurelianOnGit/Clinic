@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        {% extends 'Reception/base.html' %}
         <meta charset="UTF-8">
-        <title>{% block title %}Clinic App{% endblock %}</title>
     </head>
     <body>
-        <p>Welcome! You can book appointments on this site.</p>
-        <div class="AP_List">
+        {% block content %}
+        <div class="ap-check">
+            <h4>Check how many people are in the Queue for today</h4>
+        </div>
+        <div class="ap-list">
             <ol style="list-style-type: none; padding-left: 0;">
                 {% for appointment in appointments %}
                     <li>Token #{{ appointment.token }} — {{ appointment.name }}</li>
                 {% endfor %}
             </ol>
         </div>
+        <div class="ap-btn-wrap">
+            <button class="ap-today-btn" type="button"><h4>Book an Appointment<h4></button>
+            <button class="ap-later-btn" type="submit"><h4>Book for another Day</h4></button>
+        </div>
+        {% endblock %}
     </body>
 </html>
     
