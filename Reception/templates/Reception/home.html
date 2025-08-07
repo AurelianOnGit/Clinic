@@ -6,6 +6,13 @@
     </head>
     <body>
         {% block content %}
+        <div class="doctor-in">
+            {% if is_open %}
+                <h4>We're open today!</h4>
+            {% else %}
+                <h4>Sorry, we're closed today.<br></br>We'll be open again on {{ next_open_day }}!</h4>
+            {% endif %}
+        </div>
         <div class="ap-check">
             <h4>Check how many people are in the Queue for today</h4>
         </div>

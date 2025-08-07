@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <form class="book-today-form" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="submit-today-btn" type="submit">Book Today</button>
+            <button class="cancel-btn" type="button">Cancel</button>
+        </form>
+    </body>
+    <script>
+    </script>
+</html>
