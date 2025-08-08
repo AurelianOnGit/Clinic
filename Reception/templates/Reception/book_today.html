@@ -1,16 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        {% load static %}
         <meta charset="UTF-8">
+        <link rel="stylesheet" href="{% static 'Reception/style.css' %}">
+        <link rel="stylesheet" href="{% static 'Reception/form.css' %}">
     </head>
     <body>
-        <form class="book-today-form" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button class="submit-today-btn" type="submit">Book Today</button>
-            <button class="cancel-btn" type="button">Cancel</button>
-        </form>
+        <img src="{% static 'Reception/ClinicFront.jpg' %}">
+        <div class="form-container">
+            <form class="book-today-form" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="button-container">
+                    <button class="submit-today-btn" type="submit">Book Today</button>
+                    <button class="cancel-btn" type="button">Cancel</button>
+                </div>
+                {% if success %}
+                    <div id="success-box">
+                        <div class="content">
+                            <h4>Booking Successful</h4>
+                            <h5>You will be redirected shortly...</h5>
+                        </div>
+                    </div>
+                    <script>
+                        setTimeout(() => {
+                            window.location.href = "{% url 'home' %}";
+                        }, 5000);
+                    </script>
+                {% endif %}
+            </form>
+        </div>
     </body>
-    <script>
-    </script>
 </html>

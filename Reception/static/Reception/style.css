@@ -1,6 +1,7 @@
 html, body {
     margin: 0;
     height: 100%;
+    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
 }
 
 .nav-bar {
@@ -20,16 +21,13 @@ html, body {
     font-weight: bold;
 }
 
-.clinic-name {
+.clinic-name, .login-btn {
     color: blue;
     font-size: 1.5em;
     font-weight: bold;
 }
 
 .login-btn {
-    color: blue;
-    font-size: 1em;
-    font-weight: bold;
     background-color: white;
     border: none;
 }
