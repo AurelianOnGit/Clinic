@@ -4,12 +4,19 @@ from django.utils import timezone
 from .forms import BookTodayForm, BookAnotherDayForm
 from django.db.models import Max
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 
 # Create your views here.
 def home(request):
+    appointments = Appointment.objects.all().order_by('token')
+    paginator = Paginator(appointments, 25) # 25 per page
+    
+    page_number = request.GET.get('page') # which page are we on
+    page_obj = paginator.get_page(page_number) # gives page data and nav helpers
+    
     today = timezone.localdate()
     today_weekday = today.weekday()
-    closed_days = [3, 6]
+    closed_days = [1, 3, 6]
     is_open = today_weekday not in closed_days
     
     for i in range (1, 8):
@@ -27,6 +34,7 @@ def home(request):
         "appointments" : appointments_today,
         "is_open" : is_open,
         "next_open_day" : next_open_day_name,
+        'page_obj' : page_obj,
     }
     
     return render(request, "Reception/home.html", context)

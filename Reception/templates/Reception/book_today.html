@@ -3,18 +3,25 @@
     <head>
         {% load static %}
         <meta charset="UTF-8">
-        <link rel="stylesheet" href="{% static 'Reception/style.css' %}">
-        <link rel="stylesheet" href="{% static 'Reception/form.css' %}">
+        <link rel="stylesheet" href="{% static 'Reception/css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'Reception/css/form.css' %}">
+        <script>
+            function backToHome() {
+                setTimeout(function() {
+                    window.location.href = "{% url 'home' %}";
+                }, 1500);
+            }
+        </script>
     </head>
     <body>
-        <img src="{% static 'Reception/ClinicFront.jpg' %}">
+        <img src="{% static 'Reception/images/ClinicFront.jpg' %}">
         <div class="form-container">
             <form class="book-today-form" method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <div class="button-container">
-                    <button class="submit-today-btn" type="submit">Book Today</button>
-                    <button class="cancel-btn" type="button">Cancel</button>
+                    <button class="submit-today-btn" type="submit">Book</button>
+                    <button onclick="backToHome()" class="cancel-btn" type="button">Cancel</button>
                 </div>
                 {% if success %}
                     <div id="success-box">
@@ -26,7 +33,7 @@
                     <script>
                         setTimeout(() => {
                             window.location.href = "{% url 'home' %}";
-                        }, 5000);
+                        }, 2000);
                     </script>
                 {% endif %}
             </form>

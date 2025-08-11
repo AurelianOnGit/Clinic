@@ -2,7 +2,8 @@
 <html lang="en">
     <head>
         {% load static %}
-        <link rel="stylesheet" href="{% static 'Reception/style.css' %}">
+        <link rel="stylesheet" href="{% static 'Reception/css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'Reception/css/form.css' %}">
         <title>{% block title %}Clinic App{% endblock %}</title>
     </head>
     <body>
@@ -14,11 +15,13 @@
                 <h5>U Tin Htun Naing's Local Clinic</h5>
             </div>
             <div>
-                <button class="login-btn" type="button">Login | Sign Up</button>
+                <button class="login-btn" type="button"><h5>Login | Sign Up</h5></button>
             </div>
         </header>
         <main>
             {% block content %}
+            {% endblock %}
+            {% block extra_js %}
             {% endblock %}
         </main>
     </body>

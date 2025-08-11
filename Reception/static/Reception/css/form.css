@@ -1,18 +1,25 @@
 html, body {
     margin: 0;
+    padding: 0;
 }
 
 img {
-    position: relative;
+    position: absolute;
     width: 100vw;
-    z-index: 1;
+    height: 100%;
+    z-index: -1;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
 }
 
 .form-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100%;
     z-index: 100;
 }
 
@@ -22,6 +29,7 @@ img {
     border-radius: 25px;
     height: 25%;
     width: 25%;
+    background-color: white;
 }
 
 .book-today-form p {

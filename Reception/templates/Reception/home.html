@@ -1,7 +1,7 @@
 <!DOCTYPE html>
+{% extends 'Reception/base.html' %}
 <html lang="en">
     <head>
-        {% extends 'Reception/base.html' %}
         <meta charset="UTF-8">
     </head>
     <body>
@@ -13,20 +13,46 @@
                 <h4>Sorry, we're closed today.<br></br>We'll be open again on {{ next_open_day }}!</h4>
             {% endif %}
         </div>
-        <div class="ap-check">
-            <h4>Check how many people are in the Queue for today</h4>
-        </div>
-        <div class="ap-list">
-            <ol style="list-style-type: none; padding-left: 0;">
-                {% for appointment in appointments %}
-                    <li>Token #{{ appointment.token }} — {{ appointment.name }}</li>
-                {% endfor %}
-            </ol>
-        </div>
         <div class="ap-btn-wrap">
-            <button class="ap-today-btn" type="button"><h4>Book an Appointment<h4></button>
-            <button class="ap-later-btn" type="submit"><h4>Book for another Day</h4></button>
+            <button onclick="redirectToForm()" class="ap-today-btn" type="button"><h4>Book an Appointment</h4></button>
+            <button class="ap-later-btn" type="button"><h4>Book for another Day</h4></button>
         </div>
+        {% if is_open %}
+            <div class="ap-check">
+                <h4>Check how many people are in the Queue for today</h4>
+            </div>
+            <div class="ap-list">
+                <ol style="list-style-type: none; padding-left: 0;">
+                    {% for appointment in appointments %}
+                        <li>Token #{{ appointment.token }} — {{ appointment.name }}</li>
+                    {% empty %}
+                    <li>No appointments in queue.</li>
+                    {% endfor %}
+                </ol>
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">First</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    {% endif %}
+                    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                    {% if page_obj.has_next %}
+                        <a href="?page={{page_obj.next_page_number }}">Next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <div class="closed-queue">
+                <h4>We're closed today</h4>
+            </div>
+        {% endif %}
+        {% endblock %}
+        {% block extra_js %}
+            <script>
+                function redirectToForm() {
+                    window.location.href = "{% url 'book_today' %}";
+                }
+            </script>
         {% endblock %}
     </body>
 </html>

@@ -1,5 +1,6 @@
 html, body {
     margin: 0;
+    padding: 0;
     height: 100%;
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
 }
@@ -49,4 +50,12 @@ html, body {
     font-size: 1rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 25px;
+    transition: background-color 0.5s, box-shadow 0.0001s;
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: black;
+    color: white;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 255, 0.5);
 }
