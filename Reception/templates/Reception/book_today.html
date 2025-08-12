@@ -6,10 +6,10 @@
         <link rel="stylesheet" href="{% static 'Reception/css/style.css' %}">
         <link rel="stylesheet" href="{% static 'Reception/css/form.css' %}">
         <script>
-            function backToHome() {
+            function goHome() {
                 setTimeout(function() {
                     window.location.href = "{% url 'home' %}";
-                }, 1500);
+                }, 500);
             }
         </script>
     </head>
@@ -21,20 +21,24 @@
                 {{ form.as_p }}
                 <div class="button-container">
                     <button class="submit-today-btn" type="submit">Book</button>
-                    <button onclick="backToHome()" class="cancel-btn" type="button">Cancel</button>
+                    <button onclick="goHome()" class="cancel-btn" type="button">Cancel</button>
+                </div>
+                <div id="success-message">
+                    <h5>Booking Successful</h5>
+                    <h5>You will be redirected shortly...</h5>
                 </div>
                 {% if success %}
-                    <div id="success-box">
-                        <div class="content">
-                            <h4>Booking Successful</h4>
-                            <h5>You will be redirected shortly...</h5>
-                        </div>
-                    </div>
-                    <script>
-                        setTimeout(() => {
+                <script>
+                    function showSuccessAndRedirect() {
+                        const successMessage = document.getElementById('success-message');
+                        successMessage.classList.add('show')
+
+                        setTimeout(function() {
                             window.location.href = "{% url 'home' %}";
-                        }, 2000);
-                    </script>
+                        }, 2500);
+                    }
+                    window.onload = showSuccessAndRedirect;
+                </script>
                 {% endif %}
             </form>
         </div>

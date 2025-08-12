@@ -16,7 +16,7 @@ def home(request):
     
     today = timezone.localdate()
     today_weekday = today.weekday()
-    closed_days = [1, 3, 6]
+    closed_days = [5, 6]
     is_open = today_weekday not in closed_days
     
     for i in range (1, 8):

@@ -1,6 +1,7 @@
 html, body {
     margin: 0;
     padding: 0;
+    font-size: 1rem;
 }
 
 img {
@@ -15,6 +16,27 @@ img {
     -webkit-filter: blur(8px);
 }
 
+#success-message {
+    display: block;
+    position: fixed;
+    top: 1.25rem;
+    right: -18.75rem;
+    width: 15.625rem;
+    border-radius: 1.5625rem;
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 200, .5);
+    background-color: white;
+    color: blue;
+    font-size: 1.2rem;
+    text-align: center;
+    padding: 0.8rem;
+    z-index: 10;
+    transition: right 0.75s ease-in-out;
+}
+
+#success-message.show {
+    right: 1.25rem;
+}
+
 .form-container {
     display: flex;
     justify-content: center;
@@ -25,8 +47,8 @@ img {
 
 .book-today-form {
     padding: 2%;
-    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
-    border-radius: 25px;
+    box-shadow: 0 .5rem 1rem rgba(20, 20, 200, 0.5);
+    border-radius: 1.5625rem;
     height: 25%;
     width: 25%;
     background-color: white;
