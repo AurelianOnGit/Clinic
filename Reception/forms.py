@@ -12,16 +12,38 @@ class BaseAppointmentForm(forms.ModelForm):
             'token',
         ]
         
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+            
+        # Check if the name contains only alphabetic characters and spaces
+        if not all(x.isalpha() or x.isspace() for x in name):
+            raise forms.ValidationError("Error! A name can only contain Alphabetic characters and spaces")
+            
+        return name
+        
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data.get('phone_number')
+            
+        if not all(x.isnumeric() for x in phone_number):
+            raise forms.ValidationError("Error! A phone number can only contain Numeric characters")
+            
+        return phone_number
+        
 class BookTodayForm(BaseAppointmentForm):
     class Meta(BaseAppointmentForm.Meta):
-        fields = {
+        fields = [
             'name',
             'phone_number',
-        }
-        exclude = [
-            'date',
-            'token',
         ]
+        
+    def clean_date(self):
+        date = timezone.localdate()
+        today = timezone.localdate()
+            
+        if date != today:
+            raise forms.ValidationError("You can only book appointments for today!")
+            
+        return date
         
 class BookAnotherDayForm(BaseAppointmentForm):
     class Meta(BaseAppointmentForm.Meta):
@@ -31,7 +53,7 @@ class BookAnotherDayForm(BaseAppointmentForm):
             'date',
         ]
         
-    def clean_data(self):
+    def clean_date(self):
         date = self.cleaned_data['date']
         today = timezone.localdate()   
         

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from .models import Appointment
 from django.utils import timezone
 from .forms import BookTodayForm, BookAnotherDayForm
@@ -40,7 +40,7 @@ def home(request):
     return render(request, "Reception/home.html", context)
 
 def book_today(request):
-    success = False
+    success = 'success' in request.GET
     if request.method == 'POST':
         form = BookTodayForm(request.POST)
         
@@ -59,8 +59,9 @@ def book_today(request):
             else:
                 booking.token = next_token
                 booking.save()
-                success = True
-        
+                
+                success_url = f"{reverse('reception:book_today')}?success=true"
+                return redirect(success_url)     
     else:
         form = BookTodayForm()
         

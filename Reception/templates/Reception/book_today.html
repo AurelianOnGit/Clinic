@@ -8,7 +8,7 @@
         <script>
             function goHome() {
                 setTimeout(function() {
-                    window.location.href = "{% url 'home' %}";
+                    window.location.href = "{% url 'reception:home' %}";
                 }, 500);
             }
         </script>
@@ -18,29 +18,64 @@
         <div class="form-container">
             <form class="book-today-form" method="post">
                 {% csrf_token %}
-                {{ form.as_p }}
+                {% if form.non_field_errors %}
+                    <div class="non-field-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                    {{ form.name }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.phone_number.id_for_label }}">{{ form.phone_number.label }}</label>
+                    {{ form.phone_number }}
+                </div>
+                <div class="field-errors">
+                    <div class="name-error">
+                        {% if form.name.errors %}
+                            {{ form.name.errors }}
+                        {% endif %}
+                    </div>
+                    <div class="phone-number-error">
+                        {% if form.phone_number.errors %}
+                            {{ form.phone_number.errors }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% if form.name.errors or form.phone_number.errors %}
+                    <script>
+                        function showErrorMessages() {
+                            const errorContainer = document.querySelector('.field-errors');
+                            if (errorContainer) {
+                                errorContainer.classList.add('show');
+                            }
+                        }
+                        window.onload = showErrorMessages;
+                    </script>
+                {% endif %}
                 <div class="button-container">
                     <button class="submit-today-btn" type="submit">Book</button>
                     <button onclick="goHome()" class="cancel-btn" type="button">Cancel</button>
                 </div>
-                <div id="success-message">
-                    <h5>Booking Successful</h5>
-                    <h5>You will be redirected shortly...</h5>
-                </div>
-                {% if success %}
+            </form>
+            <div id="success-message">
+                <h5>Booking Successful!</h5>
+                <h5>You will be redirected shortly...</h5>
+            </div>
+            {% if success %}
                 <script>
                     function showSuccessAndRedirect() {
                         const successMessage = document.getElementById('success-message');
-                        successMessage.classList.add('show')
+                        successMessage.classList.add('show');
 
                         setTimeout(function() {
-                            window.location.href = "{% url 'home' %}";
+                            window.location.href = "{% url 'reception:home' %}";
                         }, 2500);
                     }
                     window.onload = showSuccessAndRedirect;
                 </script>
-                {% endif %}
-            </form>
+            {% endif %}
         </div>
     </body>
 </html>
