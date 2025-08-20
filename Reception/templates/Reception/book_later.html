@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{% static 'Reception/css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'Reception/css/form.css' %}">
+        <script>
+            function goHome() {
+                setTimeout(function() {
+                    window.location.href = "{% url 'reception:home' %}";
+                }, 500);
+            }
+        </script>
+    </head>
+    <body>
+        <img src="{% static 'Reception/images/ClinicFront.jpg' %}">
+        <div class="form-container">
+            <form class="book-later-form" method="post">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="non-field-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                    {{ form.name }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.phone_number.id_for_label }}">{{ form.phone_number.label }}</label>
+                    {{ form.phone_number }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.date.id_for_label }}">{{ form.date.label }}</label>
+                    {{ form.date }}
+                </div>
+                <div class="field-errors">
+                    <div class="name-error">
+                        {% if form.name.errors %}
+                            {{ form.name.errors }}
+                        {% endif %}
+                    </div>
+                    <div class="phone-number-error">
+                        {% if form.phone_number.errors %}
+                            {{ form.phone_number.errors }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% if form.name.errors or form.phone_number.errors %}
+                    <script>
+                        function showErrorMessages() {
+                            const errorContainer = document.querySelector('.field-errors');
+                            if (errorContainer) {
+                                errorContainer.classList.add('show');
+                            }
+                        }
+                        window.onload = showErrorMessages;
+                    </script>
+                {% endif %}
+                <div class="button-container">
+                    <button class="submit-today-btn" type="submit">Book</button>
+                    <button onclick="goHome()" class="cancel-btn" type="button">Cancel</button>
+                </div>
+            </form>
+            <div id="success-message">
+                <h5>Booking Successful!</h5>
+                <h5>You will be redirected shortly...</h5>
+            </div>
+            {% if success %}
+                <script>
+                    function showSuccessAndRedirect() {
+                        const successMessage = document.getElementById('success-message');
+                        successMessage.classList.add('show');
+
+                        setTimeout(function() {
+                            window.location.href = "{% url 'reception:home' %}";
+                        }, 2500);
+                    }
+                    window.onload = showSuccessAndRedirect;
+                </script>
+            {% endif %}
+            <script>
+                document.addEventListener('DOMContentLoaded', (event) => {
+                    // Django automatically generates IDs for form fields
+                    const dateInput = document.getElementById('id_date');
+
+                    if (dateInput) {
+                        // Get today's date in 'YYYY-MM-DD' format
+                        const today = new Date();
+                        const tomorrow = new Date(today);
+                        tomorrow.setDate(today.getDate() + 1);
+
+                        const year = tomorrow.getFullYear();
+                        const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+                        const day = String(tomorrow.getDate()).padStart(2, '0');
+
+                        const tomorrowString = `${year}-${month}-${day}`;
+
+                        // Set the input's default value to tomorrow's date
+                        dateInput.value = tomorrowString;
+
+                        // Set the 'min' attribute to tomorrow's date
+                        dateInput.min = tomorrowString;
+                    }                  
+                });
+            </script>
+        </div>
+    </body>
+</html>

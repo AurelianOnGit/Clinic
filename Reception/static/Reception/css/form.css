@@ -63,7 +63,16 @@ ul {
     padding: 1.9rem;
     box-shadow: 0 0.5rem 1rem 0.4rem rgba(20, 20, 200, 0.5);
     border-radius: 1.5625rem;
-    height: 25%;
+    height: 12rem;
+    width: 25%;
+    background-color: white;
+}
+
+.book-later-form {
+    padding: 2rem;
+    box-shadow: 0 0.5rem 1rem 0.4rem rgba(20, 20, 200, 0.5);
+    border-radius: 1.5625rem;
+    height: 17rem;
     width: 25%;
     background-color: white;
 }
@@ -71,7 +80,10 @@ ul {
 .form-group {
     display: flex;
     flex-direction: column;
-    margin: 0.5rem;
+}
+
+.form-group input {
+    margin-bottom: 0.75rem;
 }
 
 .field-errors {
@@ -106,12 +118,12 @@ ul {
     border-radius: 1.6rem;
 }
 
-.book-today-form label {
+.book-today-form label, .book-later-form label {
     font-weight: bold;
     margin-bottom: 0.3rem;
 }
 
-.book-today-form input {
+.book-today-form input, .book-later-form input {
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -131,4 +143,5 @@ ul {
     border-radius: 50px;
     height: 7vh;
     width: 6.5vw;
+    font-weight: bold;
 }

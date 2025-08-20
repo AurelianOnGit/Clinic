@@ -7,17 +7,17 @@ from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 
 # Create your views here.
-def home(request):
-    appointments = Appointment.objects.all().order_by('token')
-    paginator = Paginator(appointments, 25) # 25 per page
-    
-    page_number = request.GET.get('page') # which page are we on
-    page_obj = paginator.get_page(page_number) # gives page data and nav helpers
-    
+def home(request):    
     today = timezone.localdate()
     today_weekday = today.weekday()
     closed_days = [5, 6]
     is_open = today_weekday not in closed_days
+    
+    appointments = Appointment.objects.filter(date=today).order_by('token')
+    paginator = Paginator(appointments, 25) # 25 per page
+    
+    page_number = request.GET.get('page') # which page are we on
+    page_obj = paginator.get_page(page_number) # gives page data and nav helpers
     
     for i in range (1, 8):
         next_day = (today_weekday + i) % 7
@@ -68,13 +68,14 @@ def book_today(request):
     return render(request, 'Reception/book_today.html', {'form' : form, 'success' : success})
     
 def book_another_day(request):
+    success = 'success' in request.GET
     if request.method == 'POST':
         form = BookAnotherDayForm(request.POST)
         
         if form.is_valid():
             booking = form.save(commit=False)
             
-            max_token = Appointment.objects.filter(date=booking.date).aggregate(Max('token'))['token']
+            max_token = Appointment.objects.filter(date=booking.date).aggregate(Max('token'))['token__max']
             
             next_token = 1 if max_token is None else max_token + 1
             
@@ -84,11 +85,12 @@ def book_another_day(request):
                 booking.token = next_token
                 booking.save()
                 success =True
-            
-            
+                
+                success_url = f"{reverse('reception:book_later')}?success=true"
+                return redirect(success_url)                   
     else:
-        form = BookAnotherDayForm(request.POST)
+        form = BookAnotherDayForm()
         
-    return render(request, 'book_another_day.html', {'form' : form, 'success' : success})
+    return render(request, 'Reception/book_later.html', {'form' : form, 'success' : success})
             
             

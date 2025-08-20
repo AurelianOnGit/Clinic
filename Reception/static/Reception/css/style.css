@@ -33,7 +33,7 @@ html, body {
     border: none;
 }
 
-.ap-btn-wrap {
+.ap-btn-wrap-open {
     display: flex;
     justify-content: center;
     align-items: center;

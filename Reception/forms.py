@@ -12,6 +12,11 @@ class BaseAppointmentForm(forms.ModelForm):
             'token',
         ]
         
+        widgets = {
+            'name' : forms.TextInput(attrs={'placeholder': 'Enter your full name'}),
+            'phone_number' : forms.TextInput(attrs={'placeholder': 'Enter your phone number'}),
+        }
+        
     def clean_name(self):
         name = self.cleaned_data.get('name')
             
@@ -41,23 +46,32 @@ class BookTodayForm(BaseAppointmentForm):
         today = timezone.localdate()
             
         if date != today:
-            raise forms.ValidationError("You can only book appointments for today!")
+            raise forms.ValidationError("Error! You can only book appointments for today")
             
         return date
         
 class BookAnotherDayForm(BaseAppointmentForm):
-    class Meta(BaseAppointmentForm.Meta):
+    class Meta(BaseAppointmentForm.Meta):       
         fields = [
             'name',
             'phone_number',
             'date',
         ]
         
+        # Merge the parent class's widgets with the child class's widgets
+        widgets = BaseAppointmentForm.Meta.widgets.copy()
+        widgets.update({
+            'date' : forms.DateInput(attrs={'type': 'date'}),
+        })
+        
     def clean_date(self):
         date = self.cleaned_data['date']
         today = timezone.localdate()   
         
+        if date <= today:
+            raise forms.ValidationError("Error! You must choose a date that is after today")
+        
         max_date = today + timezone.timedelta(days=30)
         if date < today or date > max_date:
-            raise forms.ValidationError("You can only book within the next 30 days.")
+            raise forms.ValidationError("Error! You can only book within the next 30 days")
         return date

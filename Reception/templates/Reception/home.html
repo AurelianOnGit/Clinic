@@ -9,14 +9,18 @@
         <div class="doctor-in">
             {% if is_open %}
                 <h4>We're open today!</h4>
+                <div class="ap-btn-wrap-open">
+                    <button onclick="redirectToTodayForm()" class="ap-today-btn" type="button"><h4>Book an Appointment</h4></button>
+                    <button onclick="redirectToLaterForm()" class="ap-later-btn" type="button"><h4>Book for another Day</h4></button>
+                </div>
             {% else %}
                 <h4>Sorry, we're closed today.<br></br>We'll be open again on {{ next_open_day }}!</h4>
+                <div class="ap-btn-wrap-closed">
+                    <button class="ap-later-btn" type="button"><h4>Book for another Day</h4></button>
+                </div>
             {% endif %}
         </div>
-        <div class="ap-btn-wrap">
-            <button onclick="redirectToForm()" class="ap-today-btn" type="button"><h4>Book an Appointment</h4></button>
-            <button class="ap-later-btn" type="button"><h4>Book for another Day</h4></button>
-        </div>
+
         {% if is_open %}
             <div class="ap-check">
                 <h4>Check how many people are in the Queue for today</h4>
@@ -30,15 +34,21 @@
                     {% endfor %}
                 </ol>
                 <div class="pagination">
-                    {% if page_obj.has_previous %}
-                        <a href="?page=1">First</a>
-                        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                    {% endif %}
-                    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-                    {% if page_obj.has_next %}
-                        <a href="?page={{page_obj.next_page_number }}">Next</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-                    {% endif %}
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1">&laquo; First</a>
+                            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
+
+                        {% if page_obj.has_next %}
+                            <a href="?page={{page_obj.next_page_number }}">Next</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                        {% endif %}
+                    </span>
                 </div>
             </div>
         {% else %}
@@ -49,8 +59,12 @@
         {% endblock %}
         {% block extra_js %}
             <script>
-                function redirectToForm() {
+                function redirectToTodayForm() {
                     window.location.href = "{% url 'reception:book_today' %}";
+                }
+
+                function redirectToLaterForm() {
+                    window.location.href = "{% url 'reception:book_later' %}";
                 }
             </script>
         {% endblock %}
