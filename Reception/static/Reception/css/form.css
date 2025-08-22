@@ -4,7 +4,7 @@ html, body {
     font-size: 1rem;
 }
 
-img {
+.form-bg {
     position: absolute;
     width: 100vw;
     height: 100%;
@@ -88,27 +88,39 @@ ul {
 
 .field-errors {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     gap: 1rem;
     position: fixed;
+    inset: -1.25rem 0 auto 0;
+    padding: 0 0.3rem;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
-    top: -10rem;
+    top: -20rem;
     transition: top 0.5s ease-in-out;
+}
+
+@media (max-width: 600px) {
+    .field-errors {
+        width: 90%;
+        left: 50%;
+        transform: translateX(-50%);
+        flex-direction: column;
+    }
 }
 
 .field-errors.show {
     top: 1.25rem;
 }
 
-.name-error, .phone-number-error {
+.name-error, .phone-number-error, .date-error {
     display: none;
 }
 
-.name-error:has(li), .phone-number-error:has(li) {
-    display: block;
+.name-error:has(li), .phone-number-error:has(li), .date-error:has(li) {
+    display: inline-block;
     font-weight: bold;
     color: white;
     background-color: red;

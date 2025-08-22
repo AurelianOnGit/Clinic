@@ -14,7 +14,7 @@
         </script>
     </head>
     <body>
-        <img src="{% static 'Reception/images/ClinicFront.jpg' %}">
+        <img class="form-bg" src="{% static 'Reception/images/ClinicFront.jpg' %}" alt="Image showing the entrance of the Clinic">
         <div class="form-container">
             <form class="book-today-form" method="post">
                 {% csrf_token %}
@@ -76,6 +76,17 @@
                     window.onload = showSuccessAndRedirect;
                 </script>
             {% endif %}
+            <script>
+                document.addEventListener('click', function(event) {
+                    const errorContainer = document.querySelector('.field-errors');
+
+                    if (errorContainer && !errorContainer.contains(event.target)) {
+                        if (errorContainer.classList.contains('show')) {
+                            errorContainer.classList.remove('show');
+                        }
+                    }
+                });
+            </script>
         </div>
     </body>
 </html>
