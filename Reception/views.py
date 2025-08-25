@@ -5,15 +5,23 @@ from .forms import BookTodayForm, BookAnotherDayForm
 from django.db.models import Max
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
+from datetime import timedelta, time
 
 # Create your views here.
 def home(request):    
-    today = timezone.localdate()
-    today_weekday = today.weekday()
+    today_aware = timezone.localtime()
+    today_date = today_aware.date()
+    today_weekday = today_date.weekday()
     closed_days = [5, 6]
-    is_open = today_weekday not in closed_days
     
-    appointments = Appointment.objects.filter(date=today).order_by('token')
+    # Clinic open and close times
+    opening_time = time(hour= 8, minute= 0)
+    closing_time = time(hour= 12, minute= 0)
+    current_time = today_aware.time()
+    
+    is_open = (today_weekday not in closed_days) and (opening_time <= current_time < closing_time)
+    
+    appointments = Appointment.objects.filter(date=today_date).order_by('token')
     paginator = Paginator(appointments, 25) # 25 per page
     
     page_number = request.GET.get('page') # which page are we on
@@ -26,15 +34,40 @@ def home(request):
             next_open_day_index = next_day
             break
     
+    # Calculate the date of the next open day    
+    days_until_open = (next_open_day_index - today_weekday + 7) % 7
+    if days_until_open == 0 and not is_open:
+        days_until_open = 7
+        
+    next_open_day_aware = today_aware.replace(
+        hour= 0,
+        minute= 0,
+        second= 0,
+        microsecond= 0
+    ) + timedelta(days=days_until_open)
+    
+    # Combine both the date and time to make a full datetime object
+    next_open_datetime =  next_open_day_aware.replace(hour=8, minute=0)
+    
+    # Calculate time until closing for the "book today" button
+    closing_datetime = today_aware.replace(hour= 12, minute= 0, second= 0, microsecond= 0)
+    
+    # This will be True if it's more than 1 hour until closing
+    time_to_close = closing_datetime - today_aware
+    allow_booking = time_to_close > timedelta(hours= 1)
+    
     weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     next_open_day_name = weekdays[next_open_day_index]
     
-    appointments_today = Appointment.objects.filter(date=today).order_by("token")
+    appointments_today = Appointment.objects.filter(date=today_date).order_by("token")
     context = {
         "appointments" : appointments_today,
         "is_open" : is_open,
         "next_open_day" : next_open_day_name,
-        'page_obj' : page_obj,
+        "page_obj" : page_obj,
+        "next_open_datetime" : next_open_datetime.isoformat(),
+        "allow_booking" : allow_booking,
+        
     }
     
     return render(request, "Reception/home.html", context)

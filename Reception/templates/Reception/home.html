@@ -8,9 +8,11 @@
     <body>
         {% block content %}
         <section class="status-and-booking">
-            <div class="clinic-img">
-                <img id="waiting-room-img" src="{% static 'Reception/images/ClinicWaitingRoom.png' %}">
-            </div>
+            {% if is_open %}
+                <div class="clinic-img">
+                    <img id="waiting-room-img" src="{% static 'Reception/images/ClinicWaitingRoom.png' %}" alt="Clinic Waiting Room">
+                </div>
+            {% endif %}
             <div class="doctor-in">
                 {% if is_open %}
                     <h1>We're open today!</h1>
@@ -20,13 +22,14 @@
                     </div>
                 {% else %}
                     <h1>Sorry, we're closed today.<br>We'll be open again on {{ next_open_day }}!</h1>
+                    <h1 id="countdown"></h1>
                     <div class="ap-btn-wrap-closed">
                         <button onclick="redirectToLaterForm()" class="ap-later-btn" type="button"><h4>Schedule an Appointment</h4></button>
                     </div>
                 {% endif %}
             </div>
         </section>
-        <section>
+        <section class="list-or-ad">
             {% if is_open %}
                 <div class="ap-check">
                     <h4>Check how many people are in the Queue for today</h4>
@@ -59,7 +62,10 @@
                 </div>
             {% else %}
                 <div class="closed-queue">
-                    <h4>We're closed today</h4>
+                    <h1>In the meantime, you can check out this store</h1>
+                </div>
+                <div class="store-img">
+                    <img id="storefront-img" src="{% static 'Reception/images/Placeholder.png' %}" alt="Entrance of the Store">
                 </div>
             {% endif %}
         </section>
@@ -73,6 +79,45 @@
                 function redirectToLaterForm() {
                     window.location.href = "{% url 'reception:book_later' %}";
                 }
+
+                // Get the timestamp from the context variable
+                const targetDate = new Date ("{{ next_open_datetime }}");
+
+                // Update the countdown every second
+                const countdown = setInterval(function () {
+                    const now = new Date().getTime();
+                    const distance = targetDate - now;
+
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    // Display the results
+                    let countdownString = "Opening in: ";
+
+                    if (days > 0) {
+                        countdownString += days + "d ";
+                    }
+
+                    if (hours > 0) {
+                        countdownString += hours + "h ";
+                    }
+
+                    if (minutes > 0) {
+                        countdownString += minutes + "m ";
+                    }
+
+                    countdownString += seconds + "s ";
+
+                    document.getElementById("countdown").innerHTML = countdownString;
+
+                    // If the countdown is finished, write some text
+                    if (distance < 0) {
+                        clearInterval(countdown);
+                        document.getElementById("countdown").innerHTML = "The Clinic is currently open!"
+                    }
+                });
             </script>
         {% endblock %}
     </body>
