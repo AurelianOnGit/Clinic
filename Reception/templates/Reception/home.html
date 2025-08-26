@@ -17,12 +17,22 @@
                 {% if is_open %}
                     <h1>We're open today!</h1>
                     <div class="ap-btn-wrap-open">
-                        <button onclick="redirectToTodayForm()" class="ap-today-btn" type="button"><h4>Book for Today!</h4></button>
+                        {% if allow_booking %}
+                            <button onclick="redirectToTodayForm()" class="ap-today-btn" type="button">
+                                <h4>Book for Today!</h4>
+                            </button>
+                        {% else %}
+                            <button class="ap-today-btn disabled" type="button" disabled data-tooltip="This button is disabled because the clinic is closing soon.">
+                                <h4>Book for Today!</h4>
+                            </button>
+                        {% endif %}
                         <button onclick="redirectToLaterForm()" class="ap-later-btn" type="button"><h4>Schedule an Appointment</h4></button>
                     </div>
                 {% else %}
-                    <h1>Sorry, we're closed today.<br>We'll be open again on {{ next_open_day }}!</h1>
-                    <h1 id="countdown"></h1>
+                    <div class="closed-headings">
+                        <h1>Sorry, we're closed today.<br>We'll be open again on {{ next_open_day }}!</h1>
+                        <h3 id="countdown"></h3>
+                    </div>
                     <div class="ap-btn-wrap-closed">
                         <button onclick="redirectToLaterForm()" class="ap-later-btn" type="button"><h4>Schedule an Appointment</h4></button>
                     </div>
@@ -32,7 +42,7 @@
         <section class="list-or-ad">
             {% if is_open %}
                 <div class="ap-check">
-                    <h4>Check how many people are in the Queue for today</h4>
+                    <h1>Check how many people are in the Queue for today</h1>
                 </div>
                 <div class="ap-list">
                     <ol style="list-style-type: none; padding-left: 0;">
@@ -81,7 +91,7 @@
                 }
 
                 // Get the timestamp from the context variable
-                const targetDate = new Date ("{{ next_open_datetime }}");
+                const targetDate = new Date("{{ next_open_datetime }}");
 
                 // Update the countdown every second
                 const countdown = setInterval(function () {
@@ -115,8 +125,13 @@
                     // If the countdown is finished, write some text
                     if (distance < 0) {
                         clearInterval(countdown);
-                        document.getElementById("countdown").innerHTML = "The Clinic is currently open!"
+                        document.getElementById("countdown").innerHTML = "The Clinic is currently open! Please refresh the page."
                     }
+
+                    // Forces the user to move to top of page after every refresh
+                    window.onbeforeunload = function() {
+                        window.scrollTo(0, 0);
+                    };
                 });
             </script>
         {% endblock %}

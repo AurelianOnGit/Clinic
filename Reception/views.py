@@ -49,6 +49,11 @@ def home(request):
     # Combine both the date and time to make a full datetime object
     next_open_datetime =  next_open_day_aware.replace(hour=8, minute=0)
     
+    # --- FOR TESTING ONLY ---
+    # Set the next open datetime to a few seconds in the future
+    #next_open_datetime = timezone.localtime() + timedelta(seconds=10)
+    # --- END OF TESTING CODE ---
+    
     # Calculate time until closing for the "book today" button
     closing_datetime = today_aware.replace(hour= 12, minute= 0, second= 0, microsecond= 0)
     
@@ -66,8 +71,7 @@ def home(request):
         "next_open_day" : next_open_day_name,
         "page_obj" : page_obj,
         "next_open_datetime" : next_open_datetime.isoformat(),
-        "allow_booking" : allow_booking,
-        
+        "allow_booking" : allow_booking,        
     }
     
     return render(request, "Reception/home.html", context)
@@ -81,8 +85,8 @@ def book_today(request):
             booking = form.save(commit=False)
             booking.date = timezone.now().date()
             
-            # filters all appointment entries with the same date as booking, then calculates the max
-            # value of the token field among those filtered objects. THe result is put inside a dictionary
+            # Filters all appointment entries with the same date as booking, then calculates the max
+            # value of the token field among those filtered objects. The result is put inside a dictionary.
             max_token = Appointment.objects.filter(date=booking.date).aggregate(Max('token'))['token__max']
             
             next_token = 1 if max_token is None else max_token + 1
