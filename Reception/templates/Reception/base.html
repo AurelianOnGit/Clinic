@@ -4,6 +4,7 @@
         {% load static %}
         <link rel="stylesheet" href="{% static 'Reception/css/style.css' %}">
         <link rel="stylesheet" href="{% static 'Reception/css/form.css' %}">
+        <link href="https://fonts.cdnfonts.com/css/coca-cola" rel="stylesheet">
         <title>{% block title %}Clinic App{% endblock %}</title>
     </head>
     <body>
@@ -18,11 +19,9 @@
                 <button class="login-btn" type="button"><h5>Login | Sign Up</h5></button>
             </div>
         </header>
-        <main>
             {% block content %}
             {% endblock %}
             {% block extra_js %}
             {% endblock %}
-        </main>
     </body>
 </html>

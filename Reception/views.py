@@ -22,7 +22,7 @@ def home(request):
     is_open = (today_weekday not in closed_days) and (opening_time <= current_time < closing_time)
     
     appointments = Appointment.objects.filter(date=today_date).order_by('token')
-    paginator = Paginator(appointments, 25) # 25 per page
+    paginator = Paginator(appointments, 20) # 20 per page
     
     page_number = request.GET.get('page') # which page are we on
     page_obj = paginator.get_page(page_number) # gives page data and nav helpers
@@ -71,6 +71,7 @@ def home(request):
         "next_open_day" : next_open_day_name,
         "page_obj" : page_obj,
         "next_open_datetime" : next_open_datetime.isoformat(),
+        "closing_datetime" : closing_datetime.isoformat(),
         "allow_booking" : allow_booking,        
     }
     

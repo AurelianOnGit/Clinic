@@ -7,78 +7,97 @@
     </head>
     <body>
         {% block content %}
-        <section class="status-and-booking">
-            {% if is_open %}
-                <div class="clinic-img">
-                    <img id="waiting-room-img" src="{% static 'Reception/images/ClinicWaitingRoom.png' %}" alt="Clinic Waiting Room">
-                </div>
-            {% endif %}
-            <div class="doctor-in">
+        <main>
+            <section class="status-and-booking">
                 {% if is_open %}
-                    <h1>We're open today!</h1>
-                    <div class="ap-btn-wrap-open">
-                        {% if allow_booking %}
-                            <button onclick="redirectToTodayForm()" class="ap-today-btn" type="button">
-                                <h4>Book for Today!</h4>
-                            </button>
-                        {% else %}
-                            <button class="ap-today-btn disabled" type="button" disabled data-tooltip="This button is disabled because the clinic is closing soon.">
-                                <h4>Book for Today!</h4>
-                            </button>
-                        {% endif %}
-                        <button onclick="redirectToLaterForm()" class="ap-later-btn" type="button"><h4>Schedule an Appointment</h4></button>
-                    </div>
-                {% else %}
-                    <div class="closed-headings">
-                        <h1>Sorry, we're closed today.<br>We'll be open again on {{ next_open_day }}!</h1>
-                        <h3 id="countdown"></h3>
-                    </div>
-                    <div class="ap-btn-wrap-closed">
-                        <button onclick="redirectToLaterForm()" class="ap-later-btn" type="button"><h4>Schedule an Appointment</h4></button>
+                    <div class="clinic-img">
+                        <img id="waiting-room-img" src="{% static 'Reception/images/ClinicWaitingRoom.png' %}" alt="Clinic Waiting Room">
                     </div>
                 {% endif %}
-            </div>
-        </section>
-        <section class="list-or-ad">
-            {% if is_open %}
-                <div class="ap-check">
-                    <h1>Check how many people are in the Queue for today</h1>
+                <div class="doctor-in">
+                    {% if is_open %}
+                        <div class="open-headings">
+                            <h1>We're open today!</h1>
+                            <h3 id="countdown-to-close"></h3>
+                        </div>
+                        <div class="ap-btn-wrap-open">
+                            {% if allow_booking %}
+                                <button onclick="redirectToTodayForm()" class="ap-today-btn" type="button">
+                                    <h4>Book for Today!</h4>
+                                </button>
+                            {% else %}
+                                <button class="ap-today-btn disabled" type="button" disabled data-tooltip="This button is disabled because the clinic is closing soon.">
+                                    <h4>Book for Today!</h4>
+                                </button>
+                            {% endif %}
+                            <button onclick="redirectToLaterForm()" class="ap-later-btn" type="button"><h4>Schedule an Appointment</h4></button>
+                        </div>
+                    {% else %}
+                        <div class="closed-headings">
+                            <h1>Sorry, we're closed today.<br>We'll be open again on {{ next_open_day }}!</h1>
+                            <h3 id="countdown"></h3>
+                        </div>
+                        <div class="ap-btn-wrap-closed">
+                            <button onclick="redirectToLaterForm()" class="ap-later-btn" type="button"><h4>Schedule an Appointment</h4></button>
+                        </div>
+                    {% endif %}
                 </div>
-                <div class="ap-list">
-                    <ol style="list-style-type: none; padding-left: 0;">
-                        {% for appointment in appointments %}
-                            <li>Token #{{ appointment.token }} — {{ appointment.name }}</li>
-                        {% empty %}
-                        <li>No appointments in queue.</li>
-                        {% endfor %}
-                    </ol>
-                    <div class="pagination">
-                        <span class="step-links">
-                            {% if page_obj.has_previous %}
-                                <a href="?page=1">&laquo; First</a>
-                                <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                            {% endif %}
-
-                            <span class="current">
-                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                            </span>
-
-                            {% if page_obj.has_next %}
-                                <a href="?page={{page_obj.next_page_number }}">Next</a>
-                                <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
-                            {% endif %}
-                        </span>
+            </section>
+            <section class="list">
+                {% if is_open %}
+                    <div class="ap-check">
+                        <h1>See how many people are in the Queue for today</h1>
                     </div>
+                    <div class="ap-list">
+                        <ol style="list-style-type: none; padding-left: 0;">
+                            {% for appointment in appointments %}
+                                <li>Token #{{ appointment.token }} — {{ appointment.name }}</li>
+                            {% empty %}
+                            <li>No appointments in queue.</li>
+                            {% endfor %}
+                        </ol>
+                        <div class="pagination">
+                            <span class="step-links">
+                                {% if page_obj.has_previous %}
+                                    <a href="?page=1">&laquo; First</a>
+                                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                {% endif %}
+
+                                <span class="current">
+                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                                </span>
+
+                                {% if page_obj.has_next %}
+                                    <a href="?page={{page_obj.next_page_number }}">Next</a>
+                                    <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="closed-queue" style="display: none;">
+                        <h1>Sorry, the Clinic is currently closed.</h1>
+                    </div>
+                {% endif %}
+            </section>
+            {% if is_open %}
+                <div class="shill-heading-open">
+                    <h1>Be sure to also check out our partner store!</h1>
                 </div>
             {% else %}
-                <div class="closed-queue">
-                    <h1>In the meantime, you can check out this store</h1>
+                <div class="shill-heading-closed">
+                    <h1>In the meantime, you can check out our partner store!</h1>
+                </div>
+            {% endif %}
+            <section class="third-section">
+                <div class="store-info">
+                    <h1>Placeholder</h1>
                 </div>
                 <div class="store-img">
                     <img id="storefront-img" src="{% static 'Reception/images/Placeholder.png' %}" alt="Entrance of the Store">
                 </div>
-            {% endif %}
-        </section>
+            </section>         
+        </main>
         {% endblock %}
         {% block extra_js %}
             <script>
@@ -92,6 +111,7 @@
 
                 // Get the timestamp from the context variable
                 const targetDate = new Date("{{ next_open_datetime }}");
+                const closingDate = new Date("{{ closing_datetime }}");
 
                 // Update the countdown every second
                 const countdown = setInterval(function () {
@@ -104,35 +124,80 @@
                     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
                     // Display the results
-                    let countdownString = "Opening in: ";
+                    let countdownElement = document.getElementById("countdown");
+                    if (countdownElement) {
+                        let countdownString = "Opening in: ";
 
-                    if (days > 0) {
-                        countdownString += days + "d ";
+                        if (days > 0) {
+                            countdownString += days + "d ";
+                        }
+
+                        if (hours > 0) {
+                            countdownString += hours + "h ";
+                        }
+
+                        if (minutes > 0) {
+                            countdownString += minutes + "m ";
+                        }
+
+                        countdownString += seconds + "s ";
+
+                        document.getElementById("countdown").innerHTML = countdownString;
+
+                        // If the countdown is finished, write some text
+                        if (distance < 0) {
+                            clearInterval(countdown);
+                            document.getElementById("countdown").innerHTML = "The Clinic is currently open! Please refresh the page."
+                        }
                     }
-
-                    if (hours > 0) {
-                        countdownString += hours + "h ";
-                    }
-
-                    if (minutes > 0) {
-                        countdownString += minutes + "m ";
-                    }
-
-                    countdownString += seconds + "s ";
-
-                    document.getElementById("countdown").innerHTML = countdownString;
-
-                    // If the countdown is finished, write some text
-                    if (distance < 0) {
+                    else {
                         clearInterval(countdown);
-                        document.getElementById("countdown").innerHTML = "The Clinic is currently open! Please refresh the page."
-                    }
-
-                    // Forces the user to move to top of page after every refresh
-                    window.onbeforeunload = function() {
-                        window.scrollTo(0, 0);
-                    };
+                    }                 
                 });
+
+                const countdownToClose = setInterval(function () {
+                    const now = new Date().getTime();
+                    const distance = closingDate - now;
+
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    let countdownToCloseElement = document.getElementById("countdown-to-close");
+                    if (countdownToCloseElement) {
+                        let countdownString = "Closing in: ";
+
+                        if (days > 0) {
+                            countdownString += days + "d ";
+                        }
+
+                        if (hours > 0) {
+                            countdownString += hours + "h ";
+                        }
+
+                        if (minutes > 0) {
+                            countdownString += minutes + "m ";
+                        }
+
+                        countdownString += seconds + "s ";
+
+                        document.getElementById("countdown-to-close").innerHTML = countdownString;
+
+                        if (distance < 0) {
+                            clearInterval(countdown);
+                            document.getElementById("countdown-to-close").innerHTML = "The Clinic is currently open! Please refresh the page."
+                        }
+                    }
+                    else {
+                        clearInterval(countdown);
+                    }                                
+                });
+
+                // Forces the user to move to top of page after every refresh
+                window.onbeforeunload = function() {
+                    window.scrollTo(0, 0);
+                };
             </script>
         {% endblock %}
     </body>
