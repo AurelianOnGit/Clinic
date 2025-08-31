@@ -18,11 +18,6 @@
         <div class="form-container">
             <form class="book-today-form" method="post">
                 {% csrf_token %}
-                {% if form.non_field_errors %}
-                    <div class="non-field-errors">
-                        {{ form.non_field_errors }}
-                    </div>
-                {% endif %}
                 <div class="form-group">
                     <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
                     {{ form.name }}
@@ -31,22 +26,29 @@
                     <label for="{{ form.phone_number.id_for_label }}">{{ form.phone_number.label }}</label>
                     {{ form.phone_number }}
                 </div>
-                <div class="field-errors">
-                    <div class="name-error">
-                        {% if form.name.errors %}
+                <div class="errors">
+                    {% if form.name.errors %}
+                        <div class="name-error">
                             {{ form.name.errors }}
-                        {% endif %}
-                    </div>
-                    <div class="phone-number-error">
-                        {% if form.phone_number.errors %}
+                        </div>
+                    {% endif %}                    
+                    {% if form.phone_number.errors %}
+                        <div class="phone-number-error">
                             {{ form.phone_number.errors }}
-                        {% endif %}
-                    </div>
+                        </div>
+                    {% endif %}
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                            <div class="non-field-error-message">
+                                {{ error|safe }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
-                {% if form.name.errors or form.phone_number.errors %}
+                {% if form.name.errors or form.phone_number.errors or form.non_field_errors %}
                     <script>
                         function showErrorMessages() {
-                            const errorContainer = document.querySelector('.field-errors');
+                            const errorContainer = document.querySelector('.errors');
                             if (errorContainer) {
                                 errorContainer.classList.add('show');
                             }
@@ -78,7 +80,7 @@
             {% endif %}
             <script>
                 document.addEventListener('click', function(event) {
-                    const errorContainer = document.querySelector('.field-errors');
+                    const errorContainer = document.querySelector('.errors');
 
                     if (errorContainer && !errorContainer.contains(event.target)) {
                         if (errorContainer.classList.contains('show')) {

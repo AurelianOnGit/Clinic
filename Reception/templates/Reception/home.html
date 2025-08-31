@@ -21,12 +21,16 @@
                             <h3 id="countdown-to-close"></h3>
                         </div>
                         <div class="ap-btn-wrap-open">
-                            {% if allow_booking %}
+                            {% if allow_booking and not has_booked_today %}
                                 <button onclick="redirectToTodayForm()" class="ap-today-btn" type="button">
                                     <h4>Book for Today!</h4>
                                 </button>
-                            {% else %}
+                            {% elif not allow_booking %}
                                 <button class="ap-today-btn disabled" type="button" disabled data-tooltip="This button is disabled because the clinic is closing soon.">
+                                    <h4>Book for Today!</h4>
+                                </button>
+                            {% elif has_booked_today %}
+                                <button class="ap-today-btn disabled" type="button" disabled data-tooltip="This button is disabled because you have already booked successfully.">
                                     <h4>Book for Today!</h4>
                                 </button>
                             {% endif %}
@@ -147,17 +151,17 @@
                         // If the countdown is finished, write some text
                         if (distance < 0) {
                             clearInterval(countdown);
-                            document.getElementById("countdown").innerHTML = "The Clinic is currently open! Please refresh the page."
+                            countdownElement.innerHTML = "The Clinic is currently open! Please refresh the page."
                         }
-                    }
-                    else {
+                    } else {
                         clearInterval(countdown);
-                    }                 
+                    }
                 });
 
                 const countdownToClose = setInterval(function () {
                     const now = new Date().getTime();
                     const distance = closingDate - now;
+                    const distanceInMinutes = distance / (1000 * 60);
 
                     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -182,15 +186,14 @@
 
                         countdownString += seconds + "s ";
 
-                        document.getElementById("countdown-to-close").innerHTML = countdownString;
-
+                        document.getElementById("countdown-to-close").innerHTML = countdownString; 
+                        
                         if (distance < 0) {
-                            clearInterval(countdown);
-                            document.getElementById("countdown-to-close").innerHTML = "The Clinic is currently open! Please refresh the page."
+                            clearInterval(countdownToClose);
+                            countdownToCloseElement.innerHTML = "The Clinic is currently closed! Please refresh the page.";
                         }
-                    }
-                    else {
-                        clearInterval(countdown);
+                    } else {
+                        clearInterval(countdownToClose);
                     }                                
                 });
 

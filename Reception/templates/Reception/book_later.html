@@ -35,7 +35,7 @@
                     <label for="{{ form.date.id_for_label }}">{{ form.date.label }}</label>
                     {{ form.date }}
                 </div>
-                <div class="field-errors">
+                <div class="errors">
                     <div class="name-error">
                         {% if form.name.errors %}
                             {{ form.name.errors }}
@@ -55,7 +55,7 @@
                 {% if form.name.errors or form.phone_number.errors or form.date.errors %}
                     <script>
                         function showErrorMessages() {
-                            const errorContainer = document.querySelector('.field-errors');
+                            const errorContainer = document.querySelector('.errors');
                             if (errorContainer) {
                                 errorContainer.classList.add('show');
                             }
@@ -122,7 +122,7 @@
                 });
 
                 document.addEventListener('click', function(event) {
-                    const errorContainer = document.querySelector('.field-errors');
+                    const errorContainer = document.querySelector('.errors');
 
                     if (errorContainer && !errorContainer.contains(event.target)) {
                         if (errorContainer.classList.contains('show')) {

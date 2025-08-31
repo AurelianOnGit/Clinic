@@ -12,11 +12,11 @@ def home(request):
     today_aware = timezone.localtime()
     today_date = today_aware.date()
     today_weekday = today_date.weekday()
-    closed_days = [5, 6]
+    closed_days = [5]
     
     # Clinic open and close times
-    opening_time = time(hour= 8, minute= 0)
-    closing_time = time(hour= 12, minute= 0)
+    opening_time = time(hour= 15, minute= 0)
+    closing_time = time(hour= 20, minute= 0)
     current_time = today_aware.time()
     
     is_open = (today_weekday not in closed_days) and (opening_time <= current_time < closing_time)
@@ -55,11 +55,16 @@ def home(request):
     # --- END OF TESTING CODE ---
     
     # Calculate time until closing for the "book today" button
-    closing_datetime = today_aware.replace(hour= 12, minute= 0, second= 0, microsecond= 0)
+    closing_datetime = today_aware.replace(hour= 20, minute= 0, second= 0, microsecond= 0)
     
     # This will be True if it's more than 1 hour until closing
     time_to_close = closing_datetime - today_aware
     allow_booking = time_to_close > timedelta(hours= 1)
+    
+    # Check for session flag from the book_today view
+    has_book_today = request.session.get('has_booked_today', False)
+    if has_book_today:
+        del request.session['has_booked_today'] # Clear the flag for future visits
     
     weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     next_open_day_name = weekdays[next_open_day_index]
@@ -72,7 +77,8 @@ def home(request):
         "page_obj" : page_obj,
         "next_open_datetime" : next_open_datetime.isoformat(),
         "closing_datetime" : closing_datetime.isoformat(),
-        "allow_booking" : allow_booking,        
+        "allow_booking" : allow_booking,
+        "has_booked_today" : has_book_today,        
     }
     
     return render(request, "Reception/home.html", context)
@@ -83,6 +89,21 @@ def book_today(request):
         form = BookTodayForm(request.POST)
         
         if form.is_valid():
+            # Server-side validation for duplicate bookings
+            name = form.cleaned_data['name']
+            phone_number  = form.cleaned_data['phone_number']
+            today_date = timezone.localdate()
+            
+            existing_appointments = Appointment.objects.filter(
+                name=name,
+                phone_number=phone_number,
+                date=today_date
+            ).exists()
+            
+            if existing_appointments:
+                form.add_error(None, "This appointment already exists<br>If your details are wrong, please contact this number: 0967979104")
+                return render(request, 'Reception/book_today.html', {'form': form, 'success': success})
+            
             booking = form.save(commit=False)
             booking.date = timezone.now().date()
             
@@ -97,6 +118,9 @@ def book_today(request):
             else:
                 booking.token = next_token
                 booking.save()
+                
+                # Set a session flag on successful booking
+                request.session['has_booked_today'] = True
                 
                 success_url = f"{reverse('reception:book_today')}?success=true"
                 return redirect(success_url)     

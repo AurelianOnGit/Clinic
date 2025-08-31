@@ -17,6 +17,10 @@ main {
     min-height: calc(100vh - 10vh);
 }
 
+img {
+    border-radius: 25px;
+}
+
 .nav-bar {
     display: grid;
     grid-template-columns: 3fr auto 3fr;
@@ -58,7 +62,7 @@ main {
 #waiting-room-img, #storefront-img {
     float: none;
     margin: 0;
-    width: 50rem;
+    width: 45rem;
     height: 38.7rem;
     object-fit: cover;
     display: block;
@@ -75,6 +79,7 @@ main {
     flex-direction: row;
     min-height: 38rem;
     background-color: #F40009;
+    padding-bottom: 1.5rem;
 }
 
 .doctor-in, .closed-queue, .ap-check, .store-info {

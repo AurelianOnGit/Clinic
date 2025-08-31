@@ -86,7 +86,7 @@ ul {
     margin-bottom: 0.75rem;
 }
 
-.field-errors {
+.errors {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -111,17 +111,18 @@ ul {
     }
 }
 
-.field-errors.show {
+.errors.show {
     top: 1.25rem;
 }
 
-.name-error, .phone-number-error, .date-error {
+.name-error, .phone-number-error, .date-error, .non-field-error-message {
     display: none;
 }
 
-.name-error:has(li), .phone-number-error:has(li), .date-error:has(li) {
+.name-error:not(:empty), .phone-number-error:not(:empty), .date-error:not(:empty), .non-field-error-message:not(:empty) {
     display: inline-block;
     font-weight: bold;
+    line-height: 1.5rem;
     color: white;
     background-color: red;
     text-align: center;
