@@ -53,13 +53,16 @@
                         <h1>See how many people are in the Queue for today</h1>
                     </div>
                     <div class="ap-list">
-                        <ol style="list-style-type: none; padding-left: 0;">
+                        <div class="list-container">
                             {% for appointment in appointments %}
-                                <li>Token #{{ appointment.token }} — {{ appointment.name }}</li>
+                                <div class="queue-item">
+                                    <span class="token-number">#{{ appointment.token }}</span>
+                                    <span class="patient-name">{{ appointment.name }}</span>
+                                </div>
                             {% empty %}
-                            <li>No appointments in queue.</li>
+                                <p class="no-appointments">No appointments in queue</p>
                             {% endfor %}
-                        </ol>
+                        </div>
                         <div class="pagination">
                             <span class="step-links">
                                 {% if page_obj.has_previous %}

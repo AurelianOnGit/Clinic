@@ -56,6 +56,7 @@ ul {
     justify-content: center;
     align-items: center;
     height: 100%;
+    width: 100%;
     z-index: 100;
 }
 
@@ -109,6 +110,10 @@ ul {
         transform: translateX(-50%);
         flex-direction: column;
     }
+
+    .button-container {
+        flex-direction: column;
+    }
 }
 
 .errors.show {
@@ -144,17 +149,19 @@ ul {
 
 .button-container {
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
-    margin-top: 2vh;
+    margin-top: 1vh;
 }
 
 .cancel-btn, .submit-today-btn {
     padding: 1%;
     background-color: blue;
     color: white;
-    border-radius: 50px;
-    height: 7vh;
-    width: 6.5vw;
-    font-weight: bold;
+    border-radius: 1.75rem;
+    height: 3.535rem;
+    width: 7.475rem;
+    font-size: 0.9rem;
+    font-weight: 600;
 }

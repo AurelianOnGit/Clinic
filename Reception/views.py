@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from .models import Appointment
 from django.utils import timezone
 from .forms import BookTodayForm, BookAnotherDayForm
-from django.db.models import Max
+from django.db.models import Max, Q
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from datetime import timedelta, time
@@ -95,13 +95,12 @@ def book_today(request):
             today_date = timezone.localdate()
             
             existing_appointments = Appointment.objects.filter(
-                name=name,
-                phone_number=phone_number,
+                (Q(name=name) | Q(phone_number=phone_number)),
                 date=today_date
             ).exists()
             
             if existing_appointments:
-                form.add_error(None, "This appointment already exists<br>If your details are wrong, please contact this number: 0967979104")
+                form.add_error(None, "An appointment for this name or phone number already exists for today<br>If your details are wrong, please contact this number: 0967979104")
                 return render(request, 'Reception/book_today.html', {'form': form, 'success': success})
             
             booking = form.save(commit=False)

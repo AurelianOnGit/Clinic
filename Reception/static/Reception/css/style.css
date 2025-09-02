@@ -17,10 +17,6 @@ main {
     min-height: calc(100vh - 10vh);
 }
 
-img {
-    border-radius: 25px;
-}
-
 .nav-bar {
     display: grid;
     grid-template-columns: 3fr auto 3fr;
@@ -63,9 +59,13 @@ img {
     float: none;
     margin: 0;
     width: 45rem;
-    height: 38.7rem;
+    height: 39.2rem;
     object-fit: cover;
     display: block;
+}
+
+.store-img img {
+    border-radius: 1.6rem;
 }
 
 .status-and-booking, .list, .third-section {
@@ -73,6 +73,10 @@ img {
     width: 100%;
     background-color: #EEEEEE;
     box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1);
+}
+
+.status-and-booking {
+    min-height: 39rem;
 }
 
 .third-section {
@@ -90,19 +94,53 @@ img {
     flex: 1;
 }
 
-.status-and-booking {
-    min-height: 39rem;
-}
-
 .list {
     display: flex;
     flex-direction: column;
+    background-color: #F7F7F7;
+}
+
+.list .ap-check {
     background-color: #FFFFFF;
 }
 
 .ap-list, .pagination {
     margin-bottom: 1rem;
     text-align: center;
+}
+
+.list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1.25rem;
+    background-color: #F7F7F7;
+    border-radius: 0.5rem;
+}
+
+.queue-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.938rem 1.25rem;
+    max-width: 50rem;
+    min-width: 30rem;
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+}
+
+.token-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: rgb(54, 195, 59);
+}
+
+.patient-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #2930f3;
 }
 
 .closed-headings h1, 
@@ -179,7 +217,7 @@ img {
     font-size: 1rem;
     margin-bottom: 2rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 25px;
+    border-radius: 2rem;
     transition: background-color 0.5s, box-shadow 0.0001s;
 }
 
