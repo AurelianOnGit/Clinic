@@ -12,16 +12,16 @@ def home(request):
     today_aware = timezone.localtime()
     today_date = today_aware.date()
     today_weekday = today_date.weekday()
-    closed_days = [5]
+    closed_days = [6]
     
     # Clinic open and close times
-    opening_time = time(hour= 15, minute= 0)
+    opening_time = time(hour= 14, minute= 0)
     closing_time = time(hour= 20, minute= 0)
     current_time = today_aware.time()
     
     is_open = (today_weekday not in closed_days) and (opening_time <= current_time < closing_time)
     
-    appointments = Appointment.objects.filter(date=today_date).order_by('token')
+    appointments = Appointment.objects.filter(date=today_date, status__in=['pending', 'in_progress']).order_by('token')
     paginator = Paginator(appointments, 20) # 20 per page
     
     page_number = request.GET.get('page') # which page are we on
@@ -47,7 +47,7 @@ def home(request):
     ) + timedelta(days=days_until_open)
     
     # Combine both the date and time to make a full datetime object
-    next_open_datetime =  next_open_day_aware.replace(hour=8, minute=0)
+    next_open_datetime =  next_open_day_aware.replace(hour=15, minute=0)
     
     # --- FOR TESTING ONLY ---
     # Set the next open datetime to a few seconds in the future
@@ -71,7 +71,7 @@ def home(request):
     
     appointments_today = Appointment.objects.filter(date=today_date).order_by("token")
     context = {
-        "appointments" : appointments_today,
+        "appointments" : appointments,
         "is_open" : is_open,
         "next_open_day" : next_open_day_name,
         "page_obj" : page_obj,

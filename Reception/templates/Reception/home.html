@@ -45,12 +45,15 @@
                             <button onclick="redirectToLaterForm()" class="ap-later-btn" type="button"><h4>Schedule an Appointment</h4></button>
                         </div>
                     {% endif %}
+                    <div class="list-indicator">
+                        <h1>See how many people are in the Queue for today<br>down below!</h1>
+                    </div>
                 </div>
             </section>
             <section class="list">
                 {% if is_open %}
                     <div class="ap-check">
-                        <h1>See how many people are in the Queue for today</h1>
+                        <h1>Appointment List</h1>
                     </div>
                     <div class="ap-list">
                         <div class="list-container">
@@ -58,6 +61,7 @@
                                 <div class="queue-item">
                                     <span class="token-number">#{{ appointment.token }}</span>
                                     <span class="patient-name">{{ appointment.name }}</span>
+                                    <span class="patient-status">{{ appointment.get_status_display }}</span>
                                 </div>
                             {% empty %}
                                 <p class="no-appointments">No appointments in queue</p>

@@ -10,6 +10,18 @@ class Appointment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+    ]
+    
+    status = models.CharField(
+        max_length=15,
+        choices=STATUS_CHOICES,
+        default='pending',
+    )
+    
     class Meta:
         unique_together = ('date', 'token')
     

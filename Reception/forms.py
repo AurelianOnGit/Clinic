@@ -24,6 +24,8 @@ class BaseAppointmentForm(forms.ModelForm):
         if not all(x.isalpha() or x.isspace() for x in name):
             raise forms.ValidationError("Error! A name can only contain Alphabetic characters and spaces")
             
+        name = name.title()
+        
         return name
         
     def clean_phone_number(self):

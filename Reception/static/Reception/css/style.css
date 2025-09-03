@@ -58,25 +58,29 @@ main {
 #waiting-room-img, #storefront-img {
     float: none;
     margin: 0;
-    width: 45rem;
     height: 39.2rem;
     object-fit: cover;
     display: block;
 }
 
+.clinic-img img {
+    width: 100%;
+}
+
 .store-img img {
     border-radius: 1.6rem;
+    width: 45rem;
 }
 
 .status-and-booking, .list, .third-section {
     display: flex;
     width: 100%;
-    background-color: #EEEEEE;
     box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1);
 }
 
 .status-and-booking {
     min-height: 39rem;
+    background-color: #EEEEEE;
 }
 
 .third-section {
@@ -120,12 +124,11 @@ main {
 }
 
 .queue-item {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
     align-items: center;
+    gap: 5rem;
     padding: 0.938rem 1.25rem;
-    max-width: 50rem;
-    min-width: 30rem;
     background-color: #fff;
     border-radius: 0.5rem;
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
@@ -135,12 +138,24 @@ main {
     font-size: 1.5rem;
     font-weight: 700;
     color: rgb(54, 195, 59);
+    justify-self: start;
 }
 
 .patient-name {
-    font-size: 1rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #2930f3;
+    justify-self: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.patient-status {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ff8c00;
+    justify-self: end;
 }
 
 .closed-headings h1, 
@@ -159,6 +174,15 @@ main {
     text-align: center;
     line-height: 3.5rem;
     color: #003366;
+}
+
+.doctor-in {
+    margin-top: 10rem;
+}
+
+.doctor-in .list-indicator h1 {
+    font-size: 1.5rem;
+    margin-top: 0;
 }
 
 .shill-heading-closed, .shill-heading-open {
@@ -212,8 +236,8 @@ main {
 .ap-today-btn, .ap-later-btn {
     background-color: #007BFF;
     color: #FFFFFF;
-    width: 15vw;
-    height: 13vh;
+    width: 14vw;
+    height: 12vh;
     font-size: 1rem;
     margin-bottom: 2rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
