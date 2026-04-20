@@ -27,7 +27,12 @@ main {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.logo, .login-btn {
+#logo-img {
+    height: 10vh;
+    width: 5vw;
+}
+
+.login-btn {
     color: #007BFF;
     font-size: 1.5rem;
     font-weight: bold;

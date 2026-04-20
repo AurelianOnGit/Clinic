@@ -15,7 +15,7 @@
         </script>
     </head>
     <body>
-        <img class="form-bg" src="{% static 'Reception/images/ClinicFront.jpg' %}" alt="Image showing the entrance of the Clinic">
+        <img class="form-bg" src="{% static 'Reception/images/ClinicFront.png' %}" alt="Image showing the entrance of the Clinic">
         <div class="form-container">
             <form class="book-later-form" method="post">
                 {% csrf_token %}
@@ -41,20 +41,17 @@
                         <div class="name-error">
                             {{ form.name.errors }}
                         </div>
-                    {% endif %}
-                    </div>                    
+                    {% endif %}                   
                     {% if form.phone_number.errors %}
                         <div class="phone-number-error">
                             {{ form.phone_number.errors }}
                         </div>
-                    {% endif %}
-                    </div>                    
+                    {% endif %}             
                     {% if form.date.errors %}
                         <div class="date-error">
                             {{ form.date.errors }}
                         </div>
                     {% endif %}
-                    </div>
                 </div>
                 {% if form.name.errors or form.phone_number.errors or form.date.errors or form.non_field_errors %}
                     <script>
