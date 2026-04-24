@@ -1,13 +1,23 @@
 from django.shortcuts import render, redirect, reverse
+from django.contrib import messages
 from .models import Appointment
 from django.utils import timezone
 from .forms import BookTodayForm, BookAnotherDayForm
 from django.db.models import Max, Q
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
+from django.core.cache import cache
 from datetime import timedelta, time
 
 # Create your views here.
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip= request.META.get('REMOTE_ADDR')
+    return ip
+
 def home(request):    
     today_aware = timezone.localtime()
     today_date = today_aware.date()
@@ -61,10 +71,13 @@ def home(request):
     time_to_close = closing_datetime - today_aware
     allow_booking = time_to_close > timedelta(hours= 1)
     
-    # Check for session flag from the book_today view
-    has_book_today = request.session.get('has_booked_today', False)
-    if has_book_today:
-        del request.session['has_booked_today'] # Clear the flag for future visits
+    user_ip = get_client_ip(request)
+    cache_key = f"booking_limit_{user_ip}"
+    
+    ip_booking_count = cache.get(cache_key, 0)
+    
+    # If the goes over or is equal to 5, has_booked_today will be True.
+    has_booked_today = ip_booking_count >= 5
     
     weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     next_open_day_name = weekdays[next_open_day_index]
@@ -78,14 +91,22 @@ def home(request):
         "next_open_datetime" : next_open_datetime.isoformat(),
         "closing_datetime" : closing_datetime.isoformat(),
         "allow_booking" : allow_booking,
-        "has_booked_today" : has_book_today,        
+        "has_booked_today" : has_booked_today,        
     }
     
     return render(request, "Reception/home.html", context)
 
 def book_today(request):
     success = 'success' in request.GET
-    if request.method == 'POST':
+    user_ip = get_client_ip(request)
+    cache_key = f"booking_limit_{user_ip}"
+    
+    ip_booking_count = cache.get(cache_key, 0)
+    if ip_booking_count >= 5:
+        messages.error(request, "This network has reached the maximum daily bookings")
+        return redirect('reception:home')
+    
+    if request.method == 'POST':       
         form = BookTodayForm(request.POST)
         
         if form.is_valid():
@@ -116,12 +137,11 @@ def book_today(request):
                 form.add_error(None, "All 100 booking slots for today have been filled.")
             else:
                 booking.token = next_token
-                booking.save()
-                
-                # Set a session flag on successful booking
-                request.session['has_booked_today'] = True
+                booking.save()               
                 
                 success_url = f"{reverse('reception:book_today')}?success=true"
+                cache.set(cache_key, ip_booking_count + 1, 86400)
+                
                 return redirect(success_url)     
     else:
         form = BookTodayForm()

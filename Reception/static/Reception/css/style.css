@@ -5,6 +5,10 @@ html, body {
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
 }
 
+h1 {
+    color: #007BFF;
+}
+
 h5 {
     margin: 0;
 }
@@ -285,8 +289,8 @@ main {
 }
 
 .ap-btn-wrap-closed button, .ap-btn-wrap-open button {
-    width: 19vw;
-    height: 14vh;
+    width: 17vw;
+    height: 12vh;
 }
 
 button:hover:not(.disabled) {
