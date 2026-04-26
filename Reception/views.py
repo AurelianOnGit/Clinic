@@ -22,7 +22,7 @@ def home(request):
     today_aware = timezone.localtime()
     today_date = today_aware.date()
     today_weekday = today_date.weekday()
-    closed_days = [6]
+    closed_days = [3]
     
     # Clinic open and close times
     opening_time = time(hour= 14, minute= 0)
@@ -37,17 +37,20 @@ def home(request):
     page_number = request.GET.get('page') # which page are we on
     page_obj = paginator.get_page(page_number) # gives page data and nav helpers
     
-    for i in range (1, 8):
-        next_day = (today_weekday + i) % 7
-        
+    next_open_day_index = today_weekday
+    if current_time < closing_time :
+        start_day = 0
+    else:
+        start_day = 1
+    
+    for i in range (start_day, 8):
+        next_day = (today_weekday + i) % 7       
         if next_day not in closed_days:
             next_open_day_index = next_day
             break
     
     # Calculate the date of the next open day    
     days_until_open = (next_open_day_index - today_weekday + 7) % 7
-    if days_until_open == 0 and not is_open:
-        days_until_open = 7
         
     next_open_day_aware = today_aware.replace(
         hour= 0,
@@ -79,7 +82,7 @@ def home(request):
     # If the goes over or is equal to 5, has_booked_today will be True.
     has_booked_today = ip_booking_count >= 5
     
-    weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     next_open_day_name = weekdays[next_open_day_index]
     
     appointments_today = Appointment.objects.filter(date=today_date).order_by("token")
@@ -91,7 +94,9 @@ def home(request):
         "next_open_datetime" : next_open_datetime.isoformat(),
         "closing_datetime" : closing_datetime.isoformat(),
         "allow_booking" : allow_booking,
-        "has_booked_today" : has_booked_today,        
+        "has_booked_today" : has_booked_today,
+        "ip_book_count" : ip_booking_count,
+        "days_until_open": days_until_open,         
     }
     
     return render(request, "Reception/home.html", context)
@@ -139,9 +144,12 @@ def book_today(request):
                 booking.token = next_token
                 booking.save()               
                 
-                success_url = f"{reverse('reception:book_today')}?success=true"
-                cache.set(cache_key, ip_booking_count + 1, 86400)
+                try:
+                    cache.incr(cache_key)
+                except ValueError:
+                    cache.set(cache_key, 1, 86400)
                 
+                success_url = f"{reverse('reception:book_today')}?success=true"                
                 return redirect(success_url)     
     else:
         form = BookTodayForm()
